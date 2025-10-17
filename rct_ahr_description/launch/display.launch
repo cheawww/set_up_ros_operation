@@ -1,0 +1,24 @@
+<launch>
+  <arg
+    name="model" />
+  <param
+    name="robot_description"
+    textfile="$(find rct_ahr_description)/urdf/rct_ahr_description.urdf" />
+  <node
+    name="joint_state_publisher_gui"
+    pkg="joint_state_publisher_gui"
+    type="joint_state_publisher_gui" />
+  <node
+    name="robot_state_publisher"
+    pkg="robot_state_publisher"
+    type="robot_state_publisher" />
+  <node
+    name="rviz"
+    pkg="rviz"
+    type="rviz"
+    args="-d $(find rct_ahr_description)/urdf.rviz" />
+  
+  <node pkg="tf" type="static_transform_publisher" name="base_footprint_to_base_link"
+        args="0.0 0.0 0.044 0.0 0.0 0.0 /base_footprint /base_link 40" />
+
+</launch>

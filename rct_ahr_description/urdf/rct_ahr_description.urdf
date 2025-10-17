@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-1-g15f4949  Build Version: 1.6.7594.29634
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="rct_ahr_description">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="1.69685452020959E-05 0.0457497478555732 -0.000127881974719466"
+        rpy="0 0 0" />
+      <mass
+        value="2.64107586162807" />
+      <inertia
+        ixx="0.0186325495611102"
+        ixy="6.09648655063832E-20"
+        ixz="-2.60551727908036E-18"
+        iyy="0.0336532757013295"
+        iyz="6.41641969106609E-08"
+        izz="0.0163379626730466" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rct_ahr_description/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rct_ahr_description/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="wheel_r_link">
+    <inertial>
+      <origin
+        xyz="0.0205356528365587 -3.46944695195361E-17 -7.63278329429795E-17"
+        rpy="0 0 0" />
+      <mass
+        value="0.744581931907552" />
+      <inertia
+        ixx="0.00217124883305853"
+        ixy="-2.80970720393053E-19"
+        ixz="-5.56639098615751E-19"
+        iyy="0.00119000662840789"
+        iyz="1.0842021724855E-19"
+        izz="0.00119000662840789" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rct_ahr_description/meshes/wheel_r_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rct_ahr_description/meshes/wheel_r_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="base_wheel_r_joint"
+    type="fixed">
+    <origin
+      xyz="0.1295 0 0.044"
+      rpy="2.06086483868344 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="wheel_r_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="wheel_l_link">
+    <inertial>
+      <origin
+        xyz="0.0205356528365587 -1.38777878078145E-17 -2.42861286636753E-17"
+        rpy="0 0 0" />
+      <mass
+        value="0.744581931907553" />
+      <inertia
+        ixx="0.00217124883305853"
+        ixy="8.16623183517196E-21"
+        ixz="-4.48485215862205E-21"
+        iyy="0.00119000662840789"
+        iyz="-1.62630325872826E-19"
+        izz="0.00119000662840789" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rct_ahr_description/meshes/wheel_l_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rct_ahr_description/meshes/wheel_l_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="base_wheel_l_joint"
+    type="fixed">
+    <origin
+      xyz="-0.1295 0 0.044"
+      rpy="2.06086483868344 0 3.14159265358979" />
+    <parent
+      link="base_link" />
+    <child
+      link="wheel_l_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="body_link">
+    <inertial>
+      <origin
+        xyz="0.0173133916564579 -0.129997069220095 -0.191051021869769"
+        rpy="0 0 0" />
+      <mass
+        value="1.76150298162139" />
+      <inertia
+        ixx="0.0215257936002617"
+        ixy="-1.90479306590767E-08"
+        ixz="-0.000168786232509948"
+        iyy="0.0431429110969045"
+        iyz="2.91553340162324E-08"
+        izz="0.0216738704774632" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rct_ahr_description/meshes/body_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.666666666666667 0.698039215686274 0.768627450980392 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rct_ahr_description/meshes/body_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="base_body_link"
+    type="continuous">
+    <origin
+      xyz="-0.09 -0.17 0.077"
+      rpy="-1.5707963267949 0 2.56288301873173" />
+    <parent
+      link="base_link" />
+    <child
+      link="body_link" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  
+</robot>

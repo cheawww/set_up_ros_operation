@@ -1,0 +1,10 @@
+<launch>
+    <param name="robot_description" textfile="$(find rct_ahr_description)/urdf/rct_ahr_description.urdf" />
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+    <node pkg="tf" type="static_transform_publisher" name="base_footprint_to_base_link"
+        args="0.0 0.0 0.044 -1.57 0.0 0.0 /base_footprint /base_link 40" />
+     <node pkg="tf" type="static_transform_publisher" name="base_footprint_to_laser"
+        args="0.0 0.0 0.27 3.14 0.0 0.0 /base_footprint /laser_frame 40" />
+    <include file="$(find rct_ahr_driver)/launch/driver.launch" />
+</launch>

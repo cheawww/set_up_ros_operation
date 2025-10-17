@@ -1,0 +1,4 @@
+<launch>
+    <include file="$(find velocity_smoother)/launch/standalone.launch" />
+    <node name="rct_ahr_driver" pkg="rct_ahr_driver" type="driver.py" output="screen" />
+</launch>

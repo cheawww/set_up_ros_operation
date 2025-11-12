@@ -8,7 +8,6 @@ import os
 import rospkg
 from demo_yolo.msg import BoundingBox, BoundingBoxes, Data  # Make sure these are defined in your package
 
-# Get the package path
 path = rospkg.RosPack().get_path("demo_yolo")
 os.chdir(path)
 
@@ -16,8 +15,8 @@ class ObjectDetection:
     def __init__(self):
         self.bridge = CvBridge()
         rospy.init_node("object_detect", anonymous=True)
-
-        # Subscriber for camera input
+        
+        # Subscriber
         rospy.Subscriber("/usb_cam/image_raw", Image, self.update_frame_callback)
         rospy.wait_for_message("/usb_cam/image_raw", Image)
 

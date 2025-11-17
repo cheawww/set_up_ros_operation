@@ -3,7 +3,6 @@ import subprocess
 import os
 import time
 
-# Piper TTS configuration
 PIPER_MODEL = "/home/vladilena/piper/en_GB-semaine-medium.onnx"
 PIPER_BINARY = "/home/vladilena/piper/piper/piper"
 

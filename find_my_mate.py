@@ -45,6 +45,7 @@ class DetectHuman(smach.State):
         rospy.sleep(2.0) 
         return 'found' if self.detected else 'not_found'
 
+
 class AskName(smach.State):
     def __init__(self, outcomes=['got_name'], output_keys=['person_name']):
         smach.State.__init__(self, outcomes, output_keys=output_keys)

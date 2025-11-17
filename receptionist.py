@@ -20,53 +20,49 @@ q = queue.Queue()
 
 def audio_callback(indata, frames, time, status):
     if status:
-        print(f"⚠️ Audio status: {status}")
+        print(f"Audio status: {status}")
     q.put(bytes(indata))
 
 def recognize_speech():
     try:
-        # Set up correct absolute model path
         script_dir = os.path.dirname(os.path.abspath(__file__))
         model_path = os.path.join(script_dir, "model")
-
-        # Load Vosk model
+        
         if not os.path.exists(model_path):
-            raise FileNotFoundError(f"❌ Model directory not found at: {model_path}")
+            raise FileNotFoundError(f"Model not found: {model_path}")
         model = Model(model_path)
         recognizer = KaldiRecognizer(model, 16000)
 
-        # Start audio stream
         with sd.RawInputStream(samplerate=16000, blocksize=8000, dtype='int16',
                                channels=1, callback=audio_callback):
-            print("🎤 Speak now...")
+            print("Speak")
             while True:
                 data = q.get()
                 if recognizer.AcceptWaveform(data):
                     result = json.loads(recognizer.Result())
                     text = result.get('text', '')
-                    print(f"✅ You said: {text}")
+                    print(f"You said: {text}")
                     return text
     except Exception as e:
-        print(f"❌ Error in recognize_speech(): {e}")
+        print(f" Error in recognize_speech(): {e}")
         return ""
-
-
+        
 class RotateUntilPersonState(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['found'])
         self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
-        rospy.Subscriber('/bounding_boxes', BoundingBoxes, self.callback)  # ✅ Correct topic
+        rospy.Subscriber('/bounding_boxes', BoundingBoxes, self.callback)  
         self.found = False
 
     def callback(self, msg):
-        for box in msg.boxes:  # ✅ Correct field
-            if box.class_name == "person":  # ✅ Correct attribute
+        for box in msg.boxes: 
+            if box.class_name == "person":  
                 self.found = True
 
     def execute(self, ud):
-        rospy.loginfo("🔍 Rotating to find person...")
+        rospy.loginfo("find person")
         twist = Twist()
-        twist.angular.z = 0.05  # Adjust speed as needed
+        twist.angular.z = 0.05 
         rate = rospy.Rate(10)
         self.found = False
 
@@ -74,7 +70,7 @@ class RotateUntilPersonState(smach.State):
             self.pub.publish(twist)
             rate.sleep()
 
-        self.pub.publish(Twist())  # stop
+        self.pub.publish(Twist())  
         return 'found'
 
 
@@ -92,21 +88,21 @@ class RotateUntilChairState(smach.State):
         for box in self.bounding_boxes:
             if box.Class == "human":
                 center_x = (box.xmin + box.xmax) / 2
-                image_width = 640  # Set to your actual camera width
-                if center_x < image_width / 2:  # Left side
+                image_width = 640 
+                if center_x < image_width / 2:
                     self.detected_left = True
                     break
                 else:
                     self.detected_left = False
 
     def execute(self, userdata):
-        rospy.loginfo("Looking for a person on the left side...")
+        rospy.loginfo("Looking for a person")
         rate = rospy.Rate(10)
         twist = Twist()
         while not rospy.is_shutdown():
             if self.detected_left:
-                rospy.loginfo("Detected person on the left!")
-                self.cmd_pub.publish(Twist())  # Stop rotation
+                rospy.loginfo("Detected person")
+                self.cmd_pub.publish(Twist()) 
                 return 'found'
 
             # Keep rotating
@@ -123,7 +119,7 @@ class PlayAudio(smach.State):
 
     def execute(self, ud):
         path = f"/home/vladilena/th_open_ws/src/your_smach/script/{self.filename}"
-        rospy.loginfo(f"🔊 Playing audio: {path}")
+        rospy.loginfo(f"Playing audio: {path}")
         os.system(f"cvlc --play-and-exit --quiet {path}")
         return 'done'
 
@@ -134,7 +130,7 @@ class GetSpeechInput(smach.State):
 
     def execute(self, ud):
         text = recognize_speech()
-        rospy.loginfo(f"✅ Heard: {text}")
+        rospy.loginfo(f"Heard: {text}")
         ud[self.key] = text
         return 'received'
 
@@ -148,17 +144,17 @@ class NavigateToState(smach.State):
         rospy.wait_for_service('/rct/nav/nav_to_location')
         try:
             self.nav_srv(self.location)
-            return 'succeeded'  # Navigation was successful
+            return 'succeeded'  
         except rospy.ServiceException as e:
             rospy.logerr(f"Navigation service failed: {e}")
-            return 'failed'  # Navigation failed
+            return 'failed'  
 
 
 class IntroducePerson(smach.State):
     def __init__(self, person_key, drink_key):
         smach.State.__init__(self,
                              outcomes=['success'],
-                             input_keys=[person_key, drink_key])  # <-- Declare input keys here
+                             input_keys=[person_key, drink_key])  
 
         self.person_key = person_key
         self.drink_key = drink_key
@@ -178,24 +174,20 @@ class IntroducePerson(smach.State):
         person = ud[self.person_key]
         drink = ud[self.drink_key]
 
-        rospy.loginfo(f"🎙️ Introducing {person} and their favorite drink {drink}")
+        rospy.loginfo(f"Introducing {person} and their favorite drink {drink}")
 
-        # 1. Play into_person.wav
         os.system(f"cvlc --play-and-exit --quiet {self.audio_path}into_person.wav")
 
-        # 2. Speak the person's name
         self.speak(f"This is {person}", "say_person.wav")
 
-        # 3. Play into_drink.wav
         os.system(f"cvlc --play-and-exit --quiet {self.audio_path}into_drink.wav")
 
-        # 4. Speak the favorite drink
         self.speak(f"Their favorite drink is {drink}", "say_drink.wav")
 
         return 'success'
 
 
-# === STATE: Arm Pose ===
+# Arm Pose
 class ArmPoseState(smach.State):
     def __init__(self, pose_name):
         smach.State.__init__(self, outcomes=['success', 'failure'])
@@ -213,7 +205,7 @@ class ArmPoseState(smach.State):
             return 'failure'
 
 
-# === STATE: Gripper Level ===
+#Gripper Level 
 class GripperState(smach.State):
     def __init__(self, level):
         smach.State.__init__(self, outcomes=['success', 'failure'])
@@ -230,7 +222,6 @@ class GripperState(smach.State):
             rospy.logerr(f"Gripper service failed: {e}")
             return 'failure'
 
-# === WAIT 5 MINUTES ===
 class WaitState(smach.State):
     def __init__(self, duration=7):
         smach.State.__init__(self, outcomes=['waited'])
@@ -241,28 +232,27 @@ class WaitState(smach.State):
         time.sleep(self.duration)
         return 'waited'
     
-
 class UTurnState(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['completed'])
         self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
 
     def execute(self, ud):
-        rospy.loginfo("🔄 Performing U-turn (180 degrees)...")
+        rospy.loginfo(" U-turn ")
         
         twist = Twist()
-        twist.angular.z = 0.5  # Rotate at 0.5 rad/s (adjust speed if needed)
-        rate = rospy.Rate(10)  # 10 Hz
+        twist.angular.z = 0.5  
+        rate = rospy.Rate(10)  
         
         start_time = rospy.get_time()
-        duration = 3.14  # Approx 180 degrees (3.14 radians)
+        duration = 3.14  
         
         while rospy.get_time() - start_time < duration:
             self.pub.publish(twist)
             rate.sleep()
         
-        self.pub.publish(Twist())  # Stop the robot after the turn
-        rospy.loginfo("✅ U-turn completed!")
+        self.pub.publish(Twist())  
+        rospy.loginfo("completed")
         return 'completed'
 
 def main():
@@ -275,7 +265,6 @@ def main():
     sm.userdata.drink_2 = ''
 
     with sm:
-        # move collect data
         smach.StateMachine.add("WAIT_PERSON_1", RotateUntilPersonState(), transitions={'found': 'GREET_1', 'not_found': 'WAIT_5_MIN'})
         # Add the 5-second wait state after each stage
         smach.StateMachine.add("GREET_1", PlayAudio("hello_name.wav"), transitions={'done': 'ASK_NAME_1'})
@@ -335,8 +324,6 @@ def main():
         smach.StateMachine.add("GO_TO_GUESS_2", NavigateToState("guess"),  transitions={'succeeded': 'WAIT_22', 'failed': 'WAIT_22'})
         smach.StateMachine.add("WAIT_22", WaitState(5), transitions={'waited': 'WAIT_7_MIN'})
         smach.StateMachine.add("WAIT_7_MIN", WaitState(), transitions={'waited': 'END'})
-
-
 
     try:
         outcome = sm.execute()

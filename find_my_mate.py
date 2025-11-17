@@ -95,7 +95,6 @@ class GreetPersons(smach.State):
         speak(message)
         return 'done'
 
-# --- Main ---
 def main():
     rospy.init_node("smach_name_capture_robot")
 
